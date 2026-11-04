@@ -970,7 +970,7 @@ class Hianime extends AnimeParser {
         '3': StreamingServers.StreamTape,
       };
 
-      const servers = await Promise.all(
+      const servers: (IEpisodeServer | null)[] = await Promise.all(
         serverItems.map(async serverItem => {
           const server = $(serverItem);
           const serverId = server.attr('data-id');

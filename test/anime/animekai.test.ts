@@ -1,10 +1,10 @@
-import { ANIME } from '../../src/providers';
+import AnimeKai from '../../src/providers/anime/animekai';
 
 jest.setTimeout(120000);
 
 // Using a CORS proxy to bypass Cloudflare for testing purposes
 // AnimeKai is heavily protected by Cloudflare and this allows us to test the provider without dealing with Cloudflare challenges.
-const animekai = new ANIME.AnimeKai({
+const animekai = new AnimeKai({
   url: 'https://whatever.fly.dev/get?url=',
   encodeUrl: true,
 });

@@ -1,8 +1,8 @@
-import { MOVIES } from '../../src/providers';
+import Turkish from '../../src/providers/movies/turkish123';
 
 jest.setTimeout(120000);
 
-const turk = new MOVIES.Turkish();
+const turk = new Turkish();
 
 test('Search: returns a filled array of tv', async () => {
   const data = await turk.search('sen');

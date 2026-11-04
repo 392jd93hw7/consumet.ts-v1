@@ -1,8 +1,8 @@
-import { MOVIES } from '../../src/providers';
+import NetMirror from '../../src/providers/movies/netmirror';
 
 jest.setTimeout(120000);
 
-const netmirror = new MOVIES.NetMirror();
+const netmirror = new NetMirror();
 
 test('search: returns results for query', async () => {
   const data = await netmirror.search('wednesday');

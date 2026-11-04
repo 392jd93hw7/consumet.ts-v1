@@ -1,8 +1,8 @@
-import { LIGHT_NOVELS } from '../../src/providers';
+import NovelUpdates from '../../src/providers/light-novels/novelupdates';
 
 jest.setTimeout(120000);
 
-const novelupdates = new LIGHT_NOVELS.NovelUpdates();
+const novelupdates = new NovelUpdates();
 
 test('returns a filled array of light novels', async () => {
   const data = await novelupdates.search('slime');

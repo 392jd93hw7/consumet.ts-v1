@@ -1,8 +1,8 @@
-import { ANIME } from '../../src/providers';
+import AnimePahe from '../../src/providers/anime/animepahe';
 
 jest.setTimeout(120000);
 
-const animepahe = new ANIME.AnimePahe();
+const animepahe = new AnimePahe();
 
 test('Search: returns a filled array of anime list', async () => {
   const data = await animepahe.search('Overlord IV');

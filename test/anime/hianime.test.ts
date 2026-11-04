@@ -1,8 +1,8 @@
-import { ANIME } from '../../src/providers';
+import Hianime from '../../src/providers/anime/hianime';
 
 jest.setTimeout(120000);
 
-const hianime = new ANIME.Hianime();
+const hianime = new Hianime();
 
 test('Search: returns a filled array of anime list', async () => {
   const data = await hianime.search('Overlord IV');

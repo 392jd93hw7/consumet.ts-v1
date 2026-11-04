@@ -1,8 +1,8 @@
-import { ANIME } from '../../src/providers';
+import AnimeSaturn from '../../src/providers/anime/animesaturn';
 
 jest.setTimeout(120000);
 
-const animesaturn = new ANIME.AnimeSaturn();
+const animesaturn = new AnimeSaturn();
 
 test('Search: returns a filled array of anime list', async () => {
   const data = await animesaturn.search('Tokyo Revengers');

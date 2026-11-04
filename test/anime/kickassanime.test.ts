@@ -1,8 +1,8 @@
-import { ANIME } from '../../src/providers';
+import KickAssAnime from '../../src/providers/anime/kickassanime';
 
 jest.setTimeout(120000);
 
-const kickassanime = new ANIME.KickAssAnime();
+const kickassanime = new KickAssAnime();
 
 test('Search: returns a filled array of anime list', async () => {
   const data = await kickassanime.search('steins');

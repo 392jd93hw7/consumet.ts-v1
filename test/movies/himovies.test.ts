@@ -1,9 +1,9 @@
 import { StreamingServers } from '../../src/models';
-import { MOVIES } from '../../src/providers';
+import HiMovies from '../../src/providers/movies/himovies';
 
 jest.setTimeout(120000);
 
-const himovies = new MOVIES.HiMovies();
+const himovies = new HiMovies();
 
 test('Search: returns a filled array of movies/tv', async () => {
   const data = await himovies.search('vincenzo');

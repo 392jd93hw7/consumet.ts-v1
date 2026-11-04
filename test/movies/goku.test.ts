@@ -1,9 +1,9 @@
 import { StreamingServers } from '../../src/models';
-import { MOVIES } from '../../src/providers';
+import Goku from '../../src/providers/movies/goku';
 
 jest.setTimeout(120000);
 
-const goku = new MOVIES.Goku();
+const goku = new Goku();
 
 test('Search: returns a filled array of movies/tv', async () => {
   const data = await goku.search('batman');

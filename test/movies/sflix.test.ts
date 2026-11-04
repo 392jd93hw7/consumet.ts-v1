@@ -1,9 +1,9 @@
 import { StreamingServers } from '../../src/models';
-import { MOVIES } from '../../src/providers';
+import SFlix from '../../src/providers/movies/sflix';
 
 jest.setTimeout(120000);
 
-const sflix = new MOVIES.SFlix();
+const sflix = new SFlix();
 
 test('Search: returns a filled array of movies/tv', async () => {
   const data = await sflix.search('vincenzo');

@@ -495,19 +495,15 @@ class Hianime extends AnimeParser {
     if (0 >= page) {
       page = 1;
     }
-    let type: number = 0;
-    switch (sortListType) {
-      case WatchListType.WATCHING:
-        type = 1;
-      case WatchListType.ONHOLD:
-        type = 2;
-      case WatchListType.PLAN_TO_WATCH:
-        type = 3;
-      case WatchListType.DROPPED:
-        type = 4;
-      case WatchListType.COMPLETED:
-        type = 5;
-    }
+    const watchListTypeIds: Record<WatchListType, number> = {
+      [WatchListType.WATCHING]: 1,
+      [WatchListType.ONHOLD]: 2,
+      [WatchListType.PLAN_TO_WATCH]: 3,
+      [WatchListType.DROPPED]: 4,
+      [WatchListType.COMPLETED]: 5,
+      [WatchListType.NONE]: 0,
+    };
+    const type = sortListType ? watchListTypeIds[sortListType] : 0;
     return this.scrapeCardPage(
       `${this.baseUrl}/user/watch-list?page=${page}${type != 0 ? '&type=' + type : ''}`,
       {

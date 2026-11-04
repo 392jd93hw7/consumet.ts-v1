@@ -930,6 +930,9 @@ export default Hianime;
           : `${this.baseUrl}/watch/${normalizedEpisodeId}`,
       );
       episodeNumberId = episodeUrl.searchParams.get('ep');
+      if (!episodeNumberId && /^\\d+$/.test(normalizedEpisodeId)) {
+        episodeNumberId = normalizedEpisodeId;
+      }
       referer = `${episodeUrl.origin}${episodeUrl.pathname}`;
     } catch {
       // A bare numeric episode ID is also accepted by the upstream endpoint.

@@ -1,9 +1,9 @@
-import { MOVIES } from '../../src/providers';
+import FlixHQ from '../../src/providers/movies/flixhq';
 import { StreamingServers } from '../../src/models';
 
 jest.setTimeout(120000);
 
-const flixhq = new MOVIES.FlixHQ();
+const flixhq = new FlixHQ();
 
 test('Search: returns a filled array of movies/tv', async () => {
   const data = await flixhq.search('vincenzo');

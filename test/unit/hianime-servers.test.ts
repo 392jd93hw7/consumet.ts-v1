@@ -108,6 +108,14 @@ describe('Hianime.fetchEpisodeServers', () => {
     ]);
   });
 
+  it('accepts a bare numeric episode ID', async () => {
+    const hianime = new Hianime(undefined, createAdapter());
+
+    const servers = await hianime.fetchEpisodeServers('123');
+
+    expect(servers).toHaveLength(2);
+  });
+
   it('rejects episode IDs without an episode number', async () => {
     const hianime = new Hianime(undefined, createAdapter());
 

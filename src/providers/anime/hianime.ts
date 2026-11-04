@@ -904,11 +904,112 @@ class Hianime extends AnimeParser {
     }
   };
   /**
-   * @deprecated
-   * @param episodeId Episode id
+   * Fetch available streaming servers for an episode.
+   * Resolves the provider's internal server IDs to their playable embed URLs.
+   *
+   * @param episodeId Episode ID, either "anime-slug$episode$123" or a URL containing ?ep=123
+   * @param subOrDub Language category to fetch (defaults to SUB)
+   * @returns Promise<IEpisodeServer[]>
    */
-  override fetchEpisodeServers = (episodeId: string): Promise<IEpisodeServer[]> => {
-    throw new Error('Method not implemented.');
+  override fetchEpisodeServers = async (
+    episodeId: string,
+    subOrDub: SubOrSub = SubOrSub.SUB,
+  ): Promise<IEpisodeServer[]> => {
+    const normalizedEpisodeId = episodeId.replace('$episode
+}
+
+export default Hianime;
+, '?ep=');
+    let episodeNumberId: string | null = null;
+    let referer = `${this.baseUrl}/`;
+
+    try {
+      const episodeUrl = new URL(
+        normalizedEpisodeId.startsWith('http')
+          ? normalizedEpisodeId
+          : `${this.baseUrl}/watch/${normalizedEpisodeId}`,
+      );
+      episodeNumberId = episodeUrl.searchParams.get('ep');
+      referer = `${episodeUrl.origin}${episodeUrl.pathname}`;
+    } catch {
+      // A bare numeric episode ID is also accepted by the upstream endpoint.
+      if (/^\\d+$/.test(normalizedEpisodeId)) episodeNumberId = normalizedEpisodeId;
+    }
+
+    if (!episodeNumberId) {
+      throw new Error('Invalid episode id');
+    }
+
+    try {
+      const { data } = await this.client.get(`${this.baseUrl}/ajax/v2/episode/servers`, {
+        params: { episodeId: episodeNumberId },
+        headers: {
+          'X-Requested-With': 'XMLHttpRequest',
+          Referer: referer,
+        },
+      });
+
+      const html = typeof data?.html === 'string' ? data.html : '';
+      if (!html) return [];
+
+      const $ = load(html);
+      const categories =
+        subOrDub === SubOrSub.BOTH
+          ? ['sub', 'dub']
+          : [subOrDub === SubOrSub.DUB ? 'dub' : 'sub'];
+
+      const findServerItems = (category: string) =>
+        `.ps_-block.ps_-block-sub.servers-${category} > .ps__-list .server-item`;
+
+      let serverItems = categories.flatMap(category => $(findServerItems(category)).toArray());
+      if (serverItems.length === 0) {
+        serverItems = $(findServerItems('raw')).toArray();
+      }
+
+      const serverTypes: Record<string, StreamingServers> = {
+        '1': StreamingServers.VidCloud,
+        '4': StreamingServers.VidStreaming,
+        '5': StreamingServers.StreamSB,
+        '3': StreamingServers.StreamTape,
+      };
+
+      const servers = await Promise.all(
+        serverItems.map(async serverItem => {
+          const server = $(serverItem);
+          const serverId = server.attr('data-id');
+          const serverType = serverTypes[server.attr('data-server-id') ?? ''];
+
+          if (!serverId || !serverType) return null;
+
+          try {
+            const { data: sourceData } = await this.client.get(
+              `${this.baseUrl}/ajax/v2/episode/sources?id=${encodeURIComponent(serverId)}`,
+              {
+                headers: {
+                  'X-Requested-With': 'XMLHttpRequest',
+                  Referer: referer,
+                },
+              },
+            );
+
+            const link = sourceData?.link;
+            if (typeof link !== 'string' || link.trim() === '') return null;
+
+            return {
+              name: serverType,
+              url: new URL(link, this.baseUrl).href,
+            } satisfies IEpisodeServer;
+          } catch {
+            // A failed server should not hide the other servers for this episode.
+            return null;
+          }
+        }),
+      );
+
+      return servers.filter((server): server is IEpisodeServer => server !== null);
+    } catch (err) {
+      throw new Error((err as Error).message);
+    }
   };
 }
 

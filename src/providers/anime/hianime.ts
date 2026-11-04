@@ -915,7 +915,7 @@ class Hianime extends AnimeParser {
     episodeId: string,
     subOrDub: SubOrSub = SubOrSub.SUB,
   ): Promise<IEpisodeServer[]> => {
-    const normalizedEpisodeId = episodeId.replace(/\\u0024episode\\u0024/g, '?ep=');
+    const normalizedEpisodeId = episodeId.replace(/\u0024episode\u0024/g, '?ep=');
     let episodeNumberId: string | null = null;
     let referer = `${this.baseUrl}/`;
 

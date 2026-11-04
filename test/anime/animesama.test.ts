@@ -1,8 +1,8 @@
-import { ANIME } from '../../src/providers';
+import AnimeSama from '../../src/providers/animesama';
 
 jest.setTimeout(120000);
 
-const animesama = new ANIME.AnimeSama();
+const animesama = new AnimeSama();
 //The Provider is working , thing is that got-scraping hadergener doesnt work well with jest environment, use the test file i made
 test('fetchAnimeInfo: returns a filled object of anime data', async () => {
   const data = await animesama.fetchAnimeInfo('gachiakuta');

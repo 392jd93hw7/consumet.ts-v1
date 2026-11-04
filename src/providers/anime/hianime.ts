@@ -907,7 +907,7 @@ class Hianime extends AnimeParser {
    * Fetch available streaming servers for an episode.
    * Resolves the provider's internal server IDs to their playable embed URLs.
    *
-   * @param episodeId Episode ID, either "anime-slug$episode$123" or a URL containing ?ep=123
+   * @param episodeId Episode ID, an anime slug plus episode marker, a URL containing ?ep=123, or a numeric ID
    * @param subOrDub Language category to fetch (defaults to SUB)
    * @returns Promise<IEpisodeServer[]>
    */
@@ -915,11 +915,8 @@ class Hianime extends AnimeParser {
     episodeId: string,
     subOrDub: SubOrSub = SubOrSub.SUB,
   ): Promise<IEpisodeServer[]> => {
-    const normalizedEpisodeId = episodeId.replace('$episode
-}
-
-export default Hianime;
-, '?ep=');
+    const episodeMarker = String.fromCharCode(36) + 'episode' + String.fromCharCode(36);
+    const normalizedEpisodeId = episodeId.split(episodeMarker).join('?ep=');
     let episodeNumberId: string | null = null;
     let referer = `${this.baseUrl}/`;
 
@@ -930,13 +927,12 @@ export default Hianime;
           : `${this.baseUrl}/watch/${normalizedEpisodeId}`,
       );
       episodeNumberId = episodeUrl.searchParams.get('ep');
-      if (!episodeNumberId && /^\\d+$/.test(normalizedEpisodeId)) {
+      if (!episodeNumberId && /^[0-9]+$/.test(normalizedEpisodeId)) {
         episodeNumberId = normalizedEpisodeId;
       }
       referer = `${episodeUrl.origin}${episodeUrl.pathname}`;
     } catch {
-      // A bare numeric episode ID is also accepted by the upstream endpoint.
-      if (/^\\d+$/.test(normalizedEpisodeId)) episodeNumberId = normalizedEpisodeId;
+      if (/^[0-9]+$/.test(normalizedEpisodeId)) episodeNumberId = normalizedEpisodeId;
     }
 
     if (!episodeNumberId) {
@@ -960,7 +956,6 @@ export default Hianime;
         subOrDub === SubOrSub.BOTH
           ? ['sub', 'dub']
           : [subOrDub === SubOrSub.DUB ? 'dub' : 'sub'];
-
       const findServerItems = (category: string) =>
         `.ps_-block.ps_-block-sub.servers-${category} > .ps__-list .server-item`;
 
@@ -981,7 +976,6 @@ export default Hianime;
           const server = $(serverItem);
           const serverId = server.attr('data-id');
           const serverType = serverTypes[server.attr('data-server-id') ?? ''];
-
           if (!serverId || !serverType) return null;
 
           try {

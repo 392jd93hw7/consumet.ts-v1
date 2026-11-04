@@ -2,7 +2,7 @@ name: Node.js CI
 
 on:
   push:
-    branches: [v2]
+    branches: [v2, "repair/**"]
   pull_request:
     branches: [v2]
 
@@ -46,3 +46,6 @@ jobs:
             yarn install --ignore-engines && break || sleep 10
           done
           yarn build
+
+      - name: Run deterministic unit tests
+        run: yarn test:unit

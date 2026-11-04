@@ -10,7 +10,7 @@ import {
   PROVIDERS_LIST,
 } from '../../src';
 
-type ProviderConstructor = new (...args: any[]) => {
+type ProviderConstructor = new () => {
   toString: {
     classPath: string;
   };
@@ -24,7 +24,7 @@ type ProviderInstance = {
 
 const categories: Array<{
   name: string;
-  exports: Record<string, ProviderConstructor>;
+  exports: object;
   registry: ProviderInstance[];
 }> = [
   { name: 'ANIME', exports: ANIME, registry: PROVIDERS_LIST.ANIME },
@@ -40,7 +40,7 @@ const categories: Array<{
 describe('public provider API', () => {
   test.each(categories)('$name exports match the provider registry', ({ exports, registry }) => {
     const exportedClassPaths = Object.values(exports)
-      .map(Provider => new Provider().toString.classPath)
+      .map(Provider => new (Provider as ProviderConstructor)().toString.classPath)
       .sort();
 
     const registeredClassPaths = registry

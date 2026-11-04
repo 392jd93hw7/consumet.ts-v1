@@ -1,4 +1,4 @@
-import AnimeSama from '../../src/providers/animesama';
+import AnimeSama from '../../src/providers/anime/animesama';
 
 jest.setTimeout(120000);
 

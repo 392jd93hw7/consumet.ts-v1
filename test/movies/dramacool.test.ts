@@ -1,9 +1,9 @@
-import { MOVIES } from '../../src/providers';
+import DramaCool from '../../src/providers/movies/dramacool';
 import { StreamingServers } from '../../src/models';
 
 jest.setTimeout(120000);
 
-const dramaCool = new MOVIES.DramaCool();
+const dramaCool = new DramaCool();
 
 test('Search: returns totalPages when search: Love.', async () => {
   const data = await dramaCool.search('Love');

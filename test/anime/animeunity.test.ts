@@ -1,8 +1,8 @@
-import { ANIME } from '../../src/providers';
+import AnimeUnity from '../../src/providers/anime/animeunity';
 
 jest.setTimeout(120000);
 
-const animeunity = new ANIME.AnimeUnity();
+const animeunity = new AnimeUnity();
 
 test('Search: returns a filled array of anime list', async () => {
   const data = await animeunity.search('Dandadan');
